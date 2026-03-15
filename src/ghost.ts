@@ -13,7 +13,7 @@ function base64url(data: Uint8Array | string): string {
   const str =
     typeof data === "string"
       ? btoa(data)
-      : btoa(String.fromCharCode(...data));
+      : btoa(Array.from(data, (b) => String.fromCharCode(b)).join(""));
   return str.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
@@ -74,7 +74,6 @@ export class GhostClient {
     const token = await createJwt(this.keyId, this.keySecret);
     return {
       Authorization: `Ghost ${token}`,
-      "Content-Type": "application/json",
       "Accept-Version": this.apiVersion,
     };
   }
@@ -88,7 +87,10 @@ export class GhostClient {
     const headers = await this.headers();
     const res = await fetch(url, {
       method,
-      headers,
+      headers: {
+        ...headers,
+        ...(body ? { "Content-Type": "application/json" } : {}),
+      },
       body: body ? JSON.stringify(body) : undefined,
     });
 

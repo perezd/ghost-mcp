@@ -73,7 +73,7 @@ test("getSiteConfig returns site for explicit URL", async () => {
 });
 
 test("getSiteConfig throws when no config exists", async () => {
-  expect(getSiteConfig(undefined, TEST_CONFIG_PATH)).rejects.toThrow(
+  await expect(getSiteConfig(undefined, TEST_CONFIG_PATH)).rejects.toThrow(
     "No Ghost sites configured"
   );
 });
@@ -90,7 +90,7 @@ test("getSiteConfig throws when site not found", async () => {
   };
   await saveConfig(config, TEST_CONFIG_PATH);
 
-  expect(
+  await expect(
     getSiteConfig("https://unknown.com", TEST_CONFIG_PATH)
   ).rejects.toThrow("Site https://unknown.com not found");
 });

@@ -23,19 +23,24 @@ export function createServer(client: GhostClient): McpServer {
       }),
     },
     async ({ filter, limit, page, order }) => {
-      const result = await client.listPosts({ filter, limit, page, order });
-      const summaries = result.posts.map((p: any) => ({
-        id: p.id,
-        title: p.title,
-        slug: p.slug,
-        status: p.status,
-        published_at: p.published_at,
-        updated_at: p.updated_at,
-        excerpt: p.excerpt,
-      }));
-      return {
-        content: [{ type: "text" as const, text: JSON.stringify({ posts: summaries, meta: result.meta }, null, 2) }],
-      };
+      try {
+        const result = await client.listPosts({ filter, limit, page, order });
+        const summaries = result.posts.map((p: any) => ({
+          id: p.id,
+          title: p.title,
+          slug: p.slug,
+          status: p.status,
+          published_at: p.published_at,
+          updated_at: p.updated_at,
+          excerpt: p.excerpt,
+        }));
+        return {
+          content: [{ type: "text" as const, text: JSON.stringify({ posts: summaries, meta: result.meta }, null, 2) }],
+        };
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        return { content: [{ type: "text" as const, text: message }], isError: true };
+      }
     }
   );
 
@@ -50,10 +55,15 @@ export function createServer(client: GhostClient): McpServer {
       }),
     },
     async ({ id_or_slug }) => {
-      const result = await client.getPost(id_or_slug);
-      return {
-        content: [{ type: "text" as const, text: JSON.stringify(result.posts[0], null, 2) }],
-      };
+      try {
+        const result = await client.getPost(id_or_slug);
+        return {
+          content: [{ type: "text" as const, text: JSON.stringify(result.posts[0], null, 2) }],
+        };
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        return { content: [{ type: "text" as const, text: message }], isError: true };
+      }
     }
   );
 
@@ -71,15 +81,20 @@ export function createServer(client: GhostClient): McpServer {
       }),
     },
     async ({ title, lexical, status, tags }) => {
-      const result = await client.createPost({
-        title,
-        lexical,
-        status,
-        tags: tags?.map((name) => ({ name })),
-      });
-      return {
-        content: [{ type: "text" as const, text: JSON.stringify(result.posts[0], null, 2) }],
-      };
+      try {
+        const result = await client.createPost({
+          title,
+          lexical,
+          status,
+          tags: tags?.map((name) => ({ name })),
+        });
+        return {
+          content: [{ type: "text" as const, text: JSON.stringify(result.posts[0], null, 2) }],
+        };
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        return { content: [{ type: "text" as const, text: message }], isError: true };
+      }
     }
   );
 
@@ -99,16 +114,21 @@ export function createServer(client: GhostClient): McpServer {
       }),
     },
     async ({ id, updated_at, title, lexical, status, tags }) => {
-      const result = await client.updatePost(id, {
-        updated_at,
-        title,
-        lexical,
-        status,
-        tags: tags?.map((name) => ({ name })),
-      });
-      return {
-        content: [{ type: "text" as const, text: JSON.stringify(result.posts[0], null, 2) }],
-      };
+      try {
+        const result = await client.updatePost(id, {
+          updated_at,
+          title,
+          lexical,
+          status,
+          tags: tags?.map((name) => ({ name })),
+        });
+        return {
+          content: [{ type: "text" as const, text: JSON.stringify(result.posts[0], null, 2) }],
+        };
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        return { content: [{ type: "text" as const, text: message }], isError: true };
+      }
     }
   );
 
@@ -122,10 +142,15 @@ export function createServer(client: GhostClient): McpServer {
       }),
     },
     async ({ id }) => {
-      await client.deletePost(id);
-      return {
-        content: [{ type: "text" as const, text: `Post ${id} deleted.` }],
-      };
+      try {
+        await client.deletePost(id);
+        return {
+          content: [{ type: "text" as const, text: `Post ${id} deleted.` }],
+        };
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        return { content: [{ type: "text" as const, text: message }], isError: true };
+      }
     }
   );
 

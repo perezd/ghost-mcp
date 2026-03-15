@@ -1,4 +1,4 @@
-import { join } from "path";
+import { join, dirname } from "path";
 import { homedir } from "os";
 
 export interface SiteConfig {
@@ -27,7 +27,7 @@ export async function saveConfig(
   config: GhostConfig,
   configPath: string = DEFAULT_CONFIG_PATH
 ): Promise<void> {
-  const dir = configPath.substring(0, configPath.lastIndexOf("/"));
+  const dir = dirname(configPath);
   await Bun.$`mkdir -p ${dir}`;
   await Bun.write(configPath, JSON.stringify(config, null, 2) + "\n", {
     mode: 0o600,
