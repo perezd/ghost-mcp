@@ -2,16 +2,10 @@
 
 MCP server for managing Ghost blog posts via the Admin API. Lexical format only.
 
-## Install
-
-```bash
-bun install -g @perezd/ghost-mcp
-```
-
 ## Setup
 
 ```bash
-ghost-mcp auth
+bunx @perezd/ghost-mcp auth
 ```
 
 Prompts for your Ghost site URL and Admin API key. Find your Admin API key in Ghost Admin under Settings > Integrations.
@@ -21,13 +15,13 @@ Prompts for your Ghost site URL and Admin API key. Find your Admin API key in Gh
 Start the MCP server (stdio transport):
 
 ```bash
-ghost-mcp serve
+bunx @perezd/ghost-mcp serve
 ```
 
-Use a specific site:
+Use a specific site (only if authenticated to multiple):
 
 ```bash
-ghost-mcp serve --url https://staging.myblog.com
+bunx @perezd/ghost-mcp serve --url https://staging.myblog.com
 ```
 
 ## Tools
