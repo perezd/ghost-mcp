@@ -72,7 +72,9 @@ switch (command) {
   case "serve":
     await serveCommand(args);
     break;
-  default:
+  default: {
+    const pkg = await Bun.file(new URL("../package.json", import.meta.url)).json();
+    console.log(`ghost-mcp v${pkg.version}\n`);
     console.log("Usage: ghost-mcp <command>\n");
     console.log("Commands:");
     console.log("  auth [url]    Authenticate with a Ghost site");
@@ -80,4 +82,5 @@ switch (command) {
     console.log("\nOptions for serve:");
     console.log("  --url <url>   Use a specific site instead of default");
     process.exit(command ? 1 : 0);
+  }
 }
