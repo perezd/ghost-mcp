@@ -155,7 +155,7 @@ export class GhostClient {
       tags?: { name: string }[];
     }
   ): Promise<{ posts: any[] }> {
-    return this.request("PUT", `posts/${id}/`, {
+    return this.request("PUT", `posts/${id}/?save_revision=true`, {
       posts: [data],
     });
   }
