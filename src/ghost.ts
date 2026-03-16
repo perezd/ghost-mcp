@@ -139,6 +139,7 @@ export class GhostClient {
     lexical?: string;
     status?: string;
     tags?: { name: string }[];
+    custom_excerpt?: string;
   }): Promise<{ posts: any[] }> {
     return this.request("POST", "posts/", {
       posts: [{ ...data, source: "api" }],
@@ -153,6 +154,7 @@ export class GhostClient {
       lexical?: string;
       status?: string;
       tags?: { name: string }[];
+      custom_excerpt?: string;
     }
   ): Promise<{ posts: any[] }> {
     return this.request("PUT", `posts/${id}/?save_revision=true`, {

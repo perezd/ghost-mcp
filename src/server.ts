@@ -78,15 +78,17 @@ export function createServer(client: GhostClient): McpServer {
         lexical: z.string().optional().describe("Post content as lexical JSON string"),
         status: z.enum(["draft", "published", "scheduled"]).default("draft").describe("Post status"),
         tags: z.array(z.string()).optional().describe("Tag names to assign"),
+        custom_excerpt: z.string().optional().describe("Custom excerpt for the post"),
       }),
     },
-    async ({ title, lexical, status, tags }) => {
+    async ({ title, lexical, status, tags, custom_excerpt }) => {
       try {
         const result = await client.createPost({
           title,
           lexical,
           status,
           tags: tags?.map((name) => ({ name })),
+          custom_excerpt,
         });
         return {
           content: [{ type: "text" as const, text: JSON.stringify(result.posts[0], null, 2) }],
@@ -111,9 +113,10 @@ export function createServer(client: GhostClient): McpServer {
         lexical: z.string().optional().describe("New content as lexical JSON string"),
         status: z.enum(["draft", "published", "scheduled"]).optional().describe("New status"),
         tags: z.array(z.string()).optional().describe("New tag names (replaces existing)"),
+        custom_excerpt: z.string().optional().describe("Custom excerpt for the post"),
       }),
     },
-    async ({ id, updated_at, title, lexical, status, tags }) => {
+    async ({ id, updated_at, title, lexical, status, tags, custom_excerpt }) => {
       try {
         const result = await client.updatePost(id, {
           updated_at,
@@ -121,6 +124,7 @@ export function createServer(client: GhostClient): McpServer {
           lexical,
           status,
           tags: tags?.map((name) => ({ name })),
+          custom_excerpt,
         });
         return {
           content: [{ type: "text" as const, text: JSON.stringify(result.posts[0], null, 2) }],
