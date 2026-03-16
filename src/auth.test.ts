@@ -72,6 +72,31 @@ test("getSiteConfig returns site for explicit URL", async () => {
   expect(result.apiKey).toBe("id2:secret2");
 });
 
+test("GHOST_MCP_CONFIG env var overrides default config path", async () => {
+  const config: GhostConfig = {
+    default: "https://env-site.com",
+    sites: {
+      "https://env-site.com": {
+        apiKey: "env-id:env-secret",
+        apiVersion: "v6.0",
+      },
+    },
+  };
+  await saveConfig(config, TEST_CONFIG_PATH);
+
+  const original = process.env.GHOST_MCP_CONFIG;
+  process.env.GHOST_MCP_CONFIG = TEST_CONFIG_PATH;
+  try {
+    // Call without explicit configPath — should use env var
+    const result = await getSiteConfig(undefined);
+    expect(result.url).toBe("https://env-site.com");
+    expect(result.apiKey).toBe("env-id:env-secret");
+  } finally {
+    if (original === undefined) delete process.env.GHOST_MCP_CONFIG;
+    else process.env.GHOST_MCP_CONFIG = original;
+  }
+});
+
 test("getSiteConfig throws when no config exists", async () => {
   await expect(getSiteConfig(undefined, TEST_CONFIG_PATH)).rejects.toThrow(
     "No Ghost sites configured"

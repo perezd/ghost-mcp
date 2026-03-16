@@ -11,10 +11,12 @@ export interface GhostConfig {
   sites: Record<string, SiteConfig>;
 }
 
-const DEFAULT_CONFIG_PATH = join(homedir(), ".ghost-mcp", "config.json");
+function defaultConfigPath(): string {
+  return process.env.GHOST_MCP_CONFIG ?? join(homedir(), ".ghost-mcp", "config.json");
+}
 
 export async function loadConfig(
-  configPath: string = DEFAULT_CONFIG_PATH
+  configPath: string = defaultConfigPath()
 ): Promise<GhostConfig> {
   const file = Bun.file(configPath);
   if (!(await file.exists())) {
@@ -25,7 +27,7 @@ export async function loadConfig(
 
 export async function saveConfig(
   config: GhostConfig,
-  configPath: string = DEFAULT_CONFIG_PATH
+  configPath: string = defaultConfigPath()
 ): Promise<void> {
   const dir = dirname(configPath);
   await Bun.$`mkdir -p ${dir}`;
@@ -36,7 +38,7 @@ export async function saveConfig(
 
 export async function getSiteConfig(
   url: string | undefined,
-  configPath: string = DEFAULT_CONFIG_PATH
+  configPath: string = defaultConfigPath()
 ): Promise<SiteConfig & { url: string }> {
   const config = await loadConfig(configPath);
 
